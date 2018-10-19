@@ -1,3 +1,5 @@
+import json
+
 TABLE_FILENAME = '../data/tables.txt'
 OUTPUT_FILENAME = '../data/pipe_counts.txt'
 
@@ -6,7 +8,8 @@ def main():
    with open(TABLE_FILENAME) as f:
       masterTable = getMasterTable(f.read())
    with open(OUTPUT_FILENAME, 'w') as f:
-      f.write(str(masterTable))
+      f.write(json.dumps(masterTable))
+      print('Success: Pipeline data written to {}.'.format(OUTPUT_FILENAME))
 
 
 def getMasterTable(text):
