@@ -13,10 +13,36 @@
       fill: #008000;
       stroke-width: 2px;
     }
+    .area {
+      transform: translateX(1px);
+    }
+    .below {
+      fill: #fdbb84;
+    }
+    .above {
+      fill: #99d8c9;
+    }
+  
+.overlay {
+  fill: none;
+  pointer-events: all;
+}
+
+/* Style the dots by assigning a fill and stroke */
+.dot {
+    fill: #ffab00;
+    stroke: #fff;
+}
+  
+  .focus circle {
+  fill: none;
+  stroke: steelblue;
+}
     </style>
   </head>
   <body>
-    <svg id="line" />
+    <div id="chart-container">
+    </div>
     <svg id="you-draw-it" />
     <script src="./lib/d3.v5.min.js"></script>
     <script src="./src/main.js"></script>
