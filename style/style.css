@@ -41,7 +41,8 @@
 
 .parity-line {
   stroke-dasharray: 2%;
-  stroke: #888;
+  stroke: #222;
+  opacity: 0.4;
 }
 
 .dot {    
