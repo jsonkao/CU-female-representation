@@ -72,37 +72,40 @@ const drawChart = (div, rank) => {
     .datum(percents)
     .attr('class', 'line')
     .attr('d', lineGen);
-  const totalLength = line.node().getTotalLength();
 
-  // Draws above (side = 0) or below (side = 1) the line.
-  const fillArea = side => {
-    const isAbove = side === 0;
-    const y0 = isAbove ? gHeight : yScale;
-    const y1 = isAbove ? yScale : 0;
-    const fillGen = d3.area()
-      .x((_, i) => xScale(START_YEAR + i))
-      .y0(y0)
-      .y1(y1)
-    // Append the path, bind the data, and call the fill below generator
-    svg.insert('path', ':first-child')
-      .datum(percents)
-      .attr('class', `area ${isAbove ? 'above' : 'below'}`)
-      .attr('d', fillGen)
-      .style('fill-opacity', 0)
-      .transition()
-      .style('fill-opacity', 1)
+  const drawEndpoints = ()
+
+  const drawAreas = () => {
+    ['above', 'below'].forEach(side => {
+      const isAbove = side === 'above';
+      const areaGen d3.area()
+        .x((_, i) => xScale(START_YEAR + i))
+        .y0(isAbove ? gHeight : yScale)
+        .y1(isAbove ? yScale : 0);
+      // Append the path, bind the data, and call the fill below generator
+      const area = svg.insert('path', ':first-child')
+        .datum(percents)
+        .attr('class', `area ${side}`)
+        .attr('d', areaGen)
+        .style('fill-opacity', 0)
+        .transition()
+        .style('fill-opacity', 1);
+
+      if (!isAbove) { // final call
+        area.on('end', drawEndpoints)
+      }
+    });
   };
 
+  // Draw path over 2.5 seconds
+  const totalLength = line.node().getTotalLength();
   line
-    .attr("stroke-dasharray", totalLength + " " + totalLength)
-    .attr("stroke-dashoffset", totalLength)
+    .attr('stroke-dasharray', totalLength + ' ' + totalLength)
+    .attr('stroke-dashoffset', totalLength)
     .transition()
-      .duration(3000)
-      .attr("stroke-dashoffset", 0)
-      .on('end', () => {
-        fillArea(0);
-        fillArea(1);
-      });
+      .duration(2500)
+      .attr('stroke-dashoffset', 0)
+      .on('end', drawAreas) // after path drawn, fill in the areas above and below it
   
 
 
