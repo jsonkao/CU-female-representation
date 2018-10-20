@@ -73,6 +73,26 @@ const drawChart = (div, rank) => {
     .attr('class', 'line')
     .attr('d', lineGen);
   const totalLength = line.node().getTotalLength();
+
+  // Draws above (side = 0) or below (side = 1) the line.
+  const fillArea = side => {
+    const isAbove = side === 0;
+    const y0 = isAbove ? gHeight : yScale;
+    const y1 = isAbove ? yScale : 0;
+    const fillGen = d3.area()
+      .x((_, i) => xScale(START_YEAR + i))
+      .y0(y0)
+      .y1(y1)
+    // Append the path, bind the data, and call the fill below generator
+    svg.insert('path', ':first-child')
+      .datum(percents)
+      .attr('class', `area ${isAbove ? 'above' : 'below'}`)
+      .attr('d', fillGen)
+      .style('fill-opacity', 0)
+      .transition()
+      .style('fill-opacity', 1)
+  };
+
   line
     .attr("stroke-dasharray", totalLength + " " + totalLength)
     .attr("stroke-dashoffset", totalLength)
@@ -80,35 +100,9 @@ const drawChart = (div, rank) => {
       .duration(3000)
       .attr("stroke-dashoffset", 0)
       .on('end', () => {
-        // This area generator fills below the line
-        const fillBelow = d3.area()
-          .x((_, i) => xScale(START_YEAR + i))
-          .y0(gHeight)
-          .y1(yScale)
-        // This area generator fills above the line
-        const fillAbove = d3.area()
-          .x((_, i) => xScale(START_YEAR + i))
-          .y0(yScale)
-          .y1(0);
-        // Append the path, bind the data, and call the fill below generator
-        svg.insert('path', ':first-child')
-          .datum(percents)
-          .attr('class', 'area below')
-          .attr('d', fillBelow)
-          .style('opacity', 0)
-          .transition(3000)
-          .style('opacity', 1)
-
-        // Append the path, bind the data, and call the fill above generator
-        svg.insert('path', ':first-child')
-          .datum(percents)
-          .attr('class', 'area above')
-          .attr('d', fillAbove)
-          .style('opacity', 0)
-          .transition(3000)
-          .style('opacity', 1);
-          
-        });
+        fillArea(0);
+        fillArea(1);
+      });
   
 
 
