@@ -150,13 +150,13 @@ const drawChart = (div, rank) => {
           .style('fill-opacity', 1);
 
       // Label each area
-      const labels = svg.selectAll('text.area-label').data(['Men', 'Women']);
+      const labels = svg.selectAll('text.area-label').data(['Women', 'Men']);
       labels
         .enter()
         .append('text')
         .attr('class', 'area-label')
         .attr('x', gWidth - 6)
-        .attr('y', (_, i) => (i * 2 + 1) * gHeight / 4)
+        .attr('y', (_, i) => gHeight * (1 - percents[percents.length - 1]) + gHeight / 6 - i * gHeight / 3)
         .attr('text-anchor', 'end')
         .text(d => d.toUpperCase())
         .attr('opacity', 0)
