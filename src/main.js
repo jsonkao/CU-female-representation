@@ -2,7 +2,7 @@ const width = 600;
 const height = 300;
 const numPoints = 10;
 const svg = d3
-  .select('svg')
+  .select('svg#you-draw-it')
   .attr('width', width)
   .attr('height', height);
 
