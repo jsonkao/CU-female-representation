@@ -46,17 +46,6 @@ const drawChart = (div, rank) => {
     .domain([0, 1])
     .range([gHeight, 0]);
 
-  // This area generator fills below the line
-  const fillBelow = d3.area()
-    .x((_, i) => xScale(START_YEAR + i))
-    .y0(gHeight)
-    .y1(yScale)
-  // This area generator fills above the line
-  const fillAbove = d3.area()
-    .x((_, i) => xScale(START_YEAR + i))
-    .y0(yScale)
-    .y1(0);
-
   // Add chart svg to the page, use margin conventions
   const svg = d3.select('div#chart-container')
     .append('svg')
@@ -66,6 +55,7 @@ const drawChart = (div, rank) => {
       .attr('transform', `translate(${margin.left}, ${margin.top})`);
 
   // Call the x axis and remove thousand-grouping formatting from years
+  // (e.g. 2,004 --> 2004)
   svg.append('g')
     .attr('class', 'x axis')
     .attr('transform', `translate(0, ${gHeight})`)
@@ -75,16 +65,63 @@ const drawChart = (div, rank) => {
     .attr('class', 'y axis')
     .call(d3.axisLeft(yScale).tickFormat(d3.format('.0%')));
 
-  // Append the path, bind the data, and call the fill below generator
-  svg.append('path')
+  const lineGen = d3.line()
+    .x((_, i) => xScale(START_YEAR + i))
+    .y(yScale);
+  const line = svg.append('path')
     .datum(percents)
-    .attr('class', 'area below')
-    .attr('d', fillBelow);
-  // Append the path, bind the data, and call the fill above generator
+    .attr('class', 'line')
+    .attr('d', lineGen);
+  const totalLength = line.node().getTotalLength();
+  line
+    .attr("stroke-dasharray", totalLength + " " + totalLength)
+    .attr("stroke-dashoffset", totalLength)
+    .transition()
+      .duration(3000)
+      .attr("stroke-dashoffset", 0)
+      .on('end', () => {
+        // This area generator fills below the line
+        const fillBelow = d3.area()
+          .x((_, i) => xScale(START_YEAR + i))
+          .y0(gHeight)
+          .y1(yScale)
+        // This area generator fills above the line
+        const fillAbove = d3.area()
+          .x((_, i) => xScale(START_YEAR + i))
+          .y0(yScale)
+          .y1(0);
+        // Append the path, bind the data, and call the fill below generator
+        svg.insert('path', ':first-child')
+          .datum(percents)
+          .attr('class', 'area below')
+          .attr('d', fillBelow)
+          .style('opacity', 0)
+          .transition(3000)
+          .style('opacity', 1)
+
+        // Append the path, bind the data, and call the fill above generator
+        svg.insert('path', ':first-child')
+          .datum(percents)
+          .attr('class', 'area above')
+          .attr('d', fillAbove)
+          .style('opacity', 0)
+          .transition(3000)
+          .style('opacity', 1);
+          
+        });
+  
+
+
+  const parityLine = d3.line()
+    .x(xScale)
+    .y(yScale(0.5));
   svg.append('path')
-    .datum(percents)
-    .attr('class', 'area above')
-    .attr('d', fillAbove);
+    .datum([START_YEAR, END_YEAR])
+    .attr('class', 'parity-line')
+    .attr('d', parityLine);
+  
+  svg.append('rect')
+    .attr('')
 
 };
 
