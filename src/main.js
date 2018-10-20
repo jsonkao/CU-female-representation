@@ -27,8 +27,8 @@ const getPercents = (divIdx, rankIdx) => {
   return women.map((w, i) => w / (w + men[i]));
 };
 
-const width = 600,
-  height = 400;
+const width = 700,
+  height = 450;
 
 const drawChart = (div, rank) => {
   const margin = {top: 50, right: 50, bottom: 50, left: 50};
@@ -101,7 +101,6 @@ const drawChart = (div, rank) => {
   const drawEndpoints = () => {
     const dots = svg.selectAll('.dot')
       .data([percents[0], percents[percents.length - 1]]);
-
     dots.enter()
       .append('circle')
       .attr('class', 'dot')
@@ -122,6 +121,7 @@ const drawChart = (div, rank) => {
         .x((_, i) => xScale(START_YEAR + i))
         .y0(isAbove ? gHeight : yScale)
         .y1(isAbove ? yScale : 0);
+
       // Append the path, bind the data, and call the fill below generator
       const area = svg.insert('path', ':first-child')
         .datum(percents)
@@ -131,6 +131,22 @@ const drawChart = (div, rank) => {
         .transition()
           .duration(500)
           .style('fill-opacity', 1);
+
+      // Label each area
+      const labels = svg.selectAll('text.area-label')
+        .data(['Men', 'Women']);
+      labels.enter()
+        .append('text')
+        .attr('class', 'area-label')
+        .attr('x', gWidth - 6)
+        .attr('y', (_, i) => (i*2 + 1) * gHeight / 4)
+        .attr('text-anchor', 'end')
+        .text(d => d.toUpperCase())
+        .attr('opacity', 0)
+        .transition()
+          .attr('opacity', 0.8);
+
+      svg.append()
 
       if (!isAbove) { // final call
         area.on('end', () => { drawEndpoints(); labelEndpoints(); })
@@ -167,6 +183,7 @@ d3.json('data/pipe_counts.json')
       () => { 
         drawChart(Math.floor(i / 2), (i % 2) * 3); 
         i++; 
+        console.log(i);
         if (i > 8) { clearInterval(int); } 
       },
       3500
