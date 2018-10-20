@@ -60,6 +60,13 @@
 
 .area-label {
   font-family: Atlas Grotesk;
-  font-size: 13px;
+  font-size: 12px;
   fill: #111;
+}
+
+.parity-label {
+  font-family: Roboto;
+  font-size: 11px;
+  fill: #222;
+  opacity: 0.7;
 }

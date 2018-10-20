@@ -121,7 +121,7 @@ const drawChart = (div, rank) => {
       .attr('class', 'dot')
       .attr('cx', (_, i) => xScale(i == 0 ? START_YEAR : END_YEAR))
       .attr('cy', yScale)
-      .attr('r', 4)
+      .attr('r', 4.5)
       .style('opacity', 0)
       .transition()
         .duration(500)
@@ -194,6 +194,15 @@ const drawChart = (div, rank) => {
     .datum([START_YEAR, END_YEAR])
     .attr('class', 'parity-line')
     .attr('d', parityLine);
+  // Add parity label
+  svg
+    .append('text')
+    .attr('x', gWidth / 2)
+    .attr('y', gHeight / 2 + 5)
+    .attr('alignment-baseline', 'hanging')
+    .attr('text-anchor', 'middle')
+    .attr('class', 'parity-label')
+    .text('Equal Number of Women and Men'.toUpperCase());
 };
 
 d3.json('data/pipe_counts.json').then(json => {
