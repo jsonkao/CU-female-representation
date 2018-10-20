@@ -1,7 +1,7 @@
 import json
 
 TABLE_FILENAME = '../data/tables.txt'
-OUTPUT_FILENAME = '../data/pipe_counts.txt'
+OUTPUT_FILENAME = '../data/pipe_counts.json'
 
 
 def main():
