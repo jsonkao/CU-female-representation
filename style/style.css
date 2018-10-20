@@ -29,6 +29,10 @@
   fill: #99d8c9;
 }
 
+.axis .tick text {
+  font-family: Roboto;
+}
+
 .line {
   stroke: #333;
   stroke-width: 1.5px;
