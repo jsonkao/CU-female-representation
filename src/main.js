@@ -54,6 +54,14 @@ const drawChart = (div, rank) => {
     .append('g')
       .attr('transform', `translate(${margin.left}, ${margin.top})`);
 
+  // Add chart title
+  svg.append('text')
+    .attr('x', gWidth / 2)
+    .attr('y', -margin.top / 3)
+    .attr('text-anchor', 'middle')
+    .attr('class', 'title')
+    .text(`${ranks[rank]} by Gender in ${divisions[div]}`);
+
   // Call the x axis and remove thousand-grouping formatting from years
   // (e.g. 2,004 --> 2004)
   svg.append('g')
@@ -153,13 +161,13 @@ d3.json('data/pipe_counts.json')
   .then(json => {
     data = json;
     let i = 0;
-    drawChart(Math.floor(i / 4), i % 4); 
+    drawChart(Math.floor(i / 2), i % 2); 
     i++; 
     const int = setInterval(
       () => { 
-        drawChart(Math.floor(i / 4), i % 4); 
+        drawChart(Math.floor(i / 2), (i % 2) * 3); 
         i++; 
-        if (i > 16) { clearInterval(int); } 
+        if (i > 8) { clearInterval(int); } 
       },
       3500
     );
