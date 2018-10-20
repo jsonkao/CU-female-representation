@@ -37,22 +37,27 @@ const drawChart = (div, rank) => {
 
   const percents = getPercents(div, rank);
 
+  // X scale will use the years from 2004 to 2013
   const xScale = d3.scaleLinear()
     .domain([START_YEAR, END_YEAR])
     .range([0, gWidth]);
+  // Y scale will use our percentages
   const yScale = d3.scaleLinear()
     .domain([0, 1])
     .range([gHeight, 0]);
 
+  // This area generator fills below the line
   const fillBelow = d3.area()
     .x((_, i) => xScale(START_YEAR + i))
     .y0(gHeight)
     .y1(yScale)
+  // This area generator fills above the line
   const fillAbove = d3.area()
     .x((_, i) => xScale(START_YEAR + i))
     .y0(yScale)
     .y1(0);
 
+  // Add chart svg to the page, use margin conventions
   const svg = d3.select('div#chart-container')
     .append('svg')
     .attr('width', width)
@@ -60,19 +65,22 @@ const drawChart = (div, rank) => {
     .append('g')
       .attr('transform', `translate(${margin.left}, ${margin.top})`);
 
+  // Call the x axis and remove thousand-grouping formatting from years
   svg.append('g')
     .attr('class', 'x axis')
     .attr('transform', `translate(0, ${gHeight})`)
     .call(d3.axisBottom(xScale).tickFormat(d3.format('')));
-
+  // Call the y axis, applying percent formatting
   svg.append('g')
     .attr('class', 'y axis')
     .call(d3.axisLeft(yScale).tickFormat(d3.format('.0%')));
 
+  // Append the path, bind the data, and call the fill below generator
   svg.append('path')
     .datum(percents)
     .attr('class', 'area below')
     .attr('d', fillBelow);
+  // Append the path, bind the data, and call the fill above generator
   svg.append('path')
     .datum(percents)
     .attr('class', 'area above')
