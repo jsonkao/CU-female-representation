@@ -73,12 +73,44 @@ const drawChart = (div, rank) => {
     .attr('class', 'line')
     .attr('d', lineGen);
 
-  const drawEndpoints = ()
+  const labelEndpoints = () => {
+    const labels = svg.selectAll('.label')
+      .data([percents[0], percents[percents.length - 1]]);
 
+    labels.enter()
+      .append('text')
+      .attr('class', 'label')
+      .attr('x', (_, i) => xScale(i === 0 ? START_YEAR :  END_YEAR))
+      .attr('y', yScale)
+      .text(d3.format('.0%'))
+      .style('opacity', 0)
+      .style('transform', (_, i) => `translate(${i === 0 ? '5px, 15px' : '-28px, -9px'})`)
+      .transition()
+        .duration(500)
+        .style('opacity', 1);
+  }
+  // Draw the endpoints of the line
+  const drawEndpoints = () => {
+    const dots = svg.selectAll('.dot')
+      .data([percents[0], percents[percents.length - 1]]);
+
+    dots.enter()
+      .append('circle')
+      .attr('class', 'dot')
+      .attr('cx', (_, i) => xScale(i == 0 ? START_YEAR : END_YEAR))
+      .attr('cy', yScale)
+      .attr('r', 4)
+      .style('opacity', 0)
+      .transition()
+        .duration(500)
+        .style('opacity', 1)
+  };
+
+  // Draw areas above and below the line
   const drawAreas = () => {
     ['above', 'below'].forEach(side => {
       const isAbove = side === 'above';
-      const areaGen d3.area()
+      const areaGen = d3.area()
         .x((_, i) => xScale(START_YEAR + i))
         .y0(isAbove ? gHeight : yScale)
         .y1(isAbove ? yScale : 0);
@@ -89,10 +121,11 @@ const drawChart = (div, rank) => {
         .attr('d', areaGen)
         .style('fill-opacity', 0)
         .transition()
-        .style('fill-opacity', 1);
+          .duration(500)
+          .style('fill-opacity', 1);
 
       if (!isAbove) { // final call
-        area.on('end', drawEndpoints)
+        area.on('end', () => { drawEndpoints(); labelEndpoints(); })
       }
     });
   };
@@ -107,8 +140,6 @@ const drawChart = (div, rank) => {
       .attr('stroke-dashoffset', 0)
       .on('end', drawAreas) // after path drawn, fill in the areas above and below it
   
-
-
   const parityLine = d3.line()
     .x(xScale)
     .y(yScale(0.5));
@@ -116,16 +147,22 @@ const drawChart = (div, rank) => {
     .datum([START_YEAR, END_YEAR])
     .attr('class', 'parity-line')
     .attr('d', parityLine);
-  
-  svg.append('rect')
-    .attr('')
-
 };
 
 d3.json('data/pipe_counts.json')
   .then(json => {
     data = json;
-    drawChart(0, 0);
+    let i = 0;
+    drawChart(Math.floor(i / 4), i % 4); 
+    i++; 
+    const int = setInterval(
+      () => { 
+        drawChart(Math.floor(i / 4), i % 4); 
+        i++; 
+        if (i > 16) { clearInterval(int); } 
+      },
+      3500
+    );
   });
 
 

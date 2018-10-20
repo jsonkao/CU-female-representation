@@ -1,29 +1,50 @@
-svg{
-  overflow: visible;
+@font-face {
+  font-family: Atlas Grotesk;
+  src: url('../fonts/AtlasGrotesk-Medium.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
 }
 
-body{
-  font-family: monospace;
-  margin: 0px;
-  overflow: hidden;
+.band {
+  fill: #efefef;
+  stroke-opacity: 1;
+  stroke: #888;
+  stroke-dasharray: 8 10;
 }
 
-.axis{
-  opacity: .5;
+.yourpath {
+  fill: #008000;
+  stroke-width: 2px;
 }
 
-.line{
+.area {
+  transform: translateX(1px);
+}
+
+.below {
+  fill: #fdbb84;
+}
+
+.above {
+  fill: #99d8c9;
+}
+
+.line {
+  stroke: #333;
+  stroke-width: 1.5px;
   fill: none;
-  stroke: black;
-  stroke-width: 3;
 }
 
-.area{
-  fill: #eee;
+.parity-line {
+  stroke-dasharray: 2%;
+  stroke: #888;
 }
 
-.your-line{
-  stroke: #f0f;
-  stroke-width: 3;
-  stroke-dasharray: 5 5;
+.dot {    
+  fill: red;
+}
+
+.label {
+  font-family: Atlas Grotesk;
+  font-size: 12px;
 }
