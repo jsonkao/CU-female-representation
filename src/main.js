@@ -244,12 +244,22 @@ const youDrawIt = (div, rank) => {
     .attr('fill', 'none')
     .attr('pointer-events', 'all');
 
+  let isFirstTouch = true;
   capture.on('mousedown', () => {
     capture
       .on('mousemove', function(d, i) {
         const [x, y] = d3.mouse(this);
         bandNum = Math.round(x / (gWidth / numBands));
         pathData[bandNum] = [bandNum * bandWidth, y];
+        if (isFirstTouch) {
+          for (let i = 0; i < bandNum; i++) {
+            pathData[i] = [i * bandWidth, y];
+          }
+          isFirstTouch = false;
+        }
+        if (bandNum === numBands) {
+          // make "Is done?" button visible
+        }
         path.datum(Object.values(pathData)).attr('d', lineGen);
       })
       .on('mouseup', () => {
