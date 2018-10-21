@@ -218,11 +218,12 @@ const youDrawIt = (div, rank) => {
   const chart = createLineGraph(`${ranks[rank]} by Gender in ${divisions[div]}`);
   const { value: { svg, xScale, yScale, gWidth, gHeight } } = chart.next();
 
+  const numBands = numYears - 1;
   const bands = svg
     .append('g')
     .selectAll('rect.band')
-    .data(new Array(numYears));
-  const bandWidth = gWidth / numYears;
+    .data(new Array(numBands));
+  const bandWidth = gWidth / numBands;
   bands
     .enter()
     .append('rect')
@@ -232,7 +233,7 @@ const youDrawIt = (div, rank) => {
     .attr('x', (_, i) => bandWidth * i);
 
   const lineGen = d3.line();
-  const pathData = {};
+  const pathData = new Array(numBands);
   const path = svg.append('path').attr('class', 'yourpath');
 
   const capture = svg
@@ -246,8 +247,9 @@ const youDrawIt = (div, rank) => {
   capture.on('mousedown', () => {
     capture
       .on('mousemove', function(d, i) {
-        bandNum = Math.round(d3.mouse(this)[0] / (gWidth / numYears));
-        pathData[bandNum] = [bandNum * bandWidth, d3.mouse(this)[1]];
+        const [x, y] = d3.mouse(this);
+        bandNum = Math.round(x / (gWidth / numBands));
+        pathData[bandNum] = [bandNum * bandWidth, y];
         path.datum(Object.values(pathData)).attr('d', lineGen);
       })
       .on('mouseup', () => {

@@ -32,18 +32,17 @@
 
 .axis .tick text {
   font-family: Roboto;
+  -moz-user-select: none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 .line {
   stroke: #333;
   stroke-width: 1.5px;
   fill: none;
-}
-
-.parity-line {
-  stroke-dasharray: 2%;
-  stroke: #222;
-  opacity: 0.4;
 }
 
 .dot {    
@@ -66,9 +65,20 @@
   fill: #111;
 }
 
+.parity-line {
+  stroke-dasharray: 2%;
+  stroke: #222;
+  opacity: 0.4;
+}
+
 .parity-label {
   font-family: Roboto;
   font-size: 11px;
   fill: #222;
   opacity: 0.8;
+  -moz-user-select: none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
