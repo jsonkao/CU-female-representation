@@ -1,6 +1,7 @@
 const START_YEAR = 2004;
 const END_YEAR = 2013;
 const YEARS = d3.range(START_YEAR, END_YEAR + 1);
+const numYears = YEARS.length;
 
 const divisions = [
   'Arts and Sciences',
@@ -30,12 +31,10 @@ const getPercents = (divIdx, rankIdx) => {
 const width = 700,
   height = 450;
 
-const drawChart = (div, rank) => {
+const createLineGraph = title => {
   const margin = { top: 50, right: 50, bottom: 50, left: 50 };
   const gWidth = width - margin.left - margin.right;
   const gHeight = height - margin.top - margin.bottom;
-
-  const percents = getPercents(div, rank);
 
   // X scale will use the years from 2004 to 2013
   const xScale = d3
@@ -64,7 +63,7 @@ const drawChart = (div, rank) => {
     .attr('y', -margin.top / 3)
     .attr('text-anchor', 'middle')
     .attr('class', 'title')
-    .text(`${ranks[rank]} by Gender in ${divisions[div]}`);
+    .text(title);
 
   // Call the x axis and remove thousand-grouping formatting from years
   // (e.g. 2,004 --> 2004)
@@ -78,6 +77,40 @@ const drawChart = (div, rank) => {
     .append('g')
     .attr('class', 'y axis')
     .call(d3.axisLeft(yScale).tickFormat(d3.format('.0%')));
+
+  const parityLine = d3
+    .line()
+    .x(xScale)
+    .y(yScale(0.5));
+  svg
+    .append('path')
+    .datum([START_YEAR, END_YEAR])
+    .attr('class', 'parity-line')
+    .attr('d', parityLine);
+  // Add parity label
+  svg
+    .append('text')
+    .attr('x', gWidth / 2)
+    .attr('y', gHeight / 2 + 5)
+    .attr('alignment-baseline', 'hanging')
+    .attr('text-anchor', 'middle')
+    .attr('class', 'parity-label')
+    .text('Equal Number of Women and Men'.toUpperCase());
+
+  return { svg, xScale, yScale, gWidth, gHeight};
+}
+
+const drawChart = (div, rank) => {
+  const percents = getPercents(div, rank);
+  
+  const {
+    svg,
+    xScale,
+    yScale,
+
+    gWidth,
+    gHeight,
+  } = createLineGraph(`${ranks[rank]} by Gender in ${divisions[div]}`);
 
   const lineGen = d3
     .line()
@@ -109,6 +142,8 @@ const drawChart = (div, rank) => {
       .transition()
       .duration(500)
       .style('opacity', 1);
+
+
   };
   // Draw the endpoints of the line
   const drawEndpoints = () => {
@@ -163,8 +198,6 @@ const drawChart = (div, rank) => {
         .transition()
           .attr('opacity', 0.8);
 
-      svg.append();
-
       if (!isAbove) {
         // final call
         area.on('end', () => {
@@ -185,54 +218,39 @@ const drawChart = (div, rank) => {
       .attr('stroke-dashoffset', 0)
       .on('end', drawAreas); // after path drawn, fill in the areas above and below it
 
-  const parityLine = d3
-    .line()
-    .x(xScale)
-    .y(yScale(0.5));
-  svg
-    .append('path')
-    .datum([START_YEAR, END_YEAR])
-    .attr('class', 'parity-line')
-    .attr('d', parityLine);
-  // Add parity label
-  svg
-    .append('text')
-    .attr('x', gWidth / 2)
-    .attr('y', gHeight / 2 + 5)
-    .attr('alignment-baseline', 'hanging')
-    .attr('text-anchor', 'middle')
-    .attr('class', 'parity-label')
-    .text('Equal Number of Women and Men'.toUpperCase());
+};
+
+const youDrawIt = (div, rank) => {
+  const {
+    svg,
+    xScale,
+    yScale,
+
+    gWidth,
+    gHeight,
+  } = createLineGraph(`${ranks[rank]} by Gender in ${divisions[div]}`);
+
+  const bands = svg
+    .append('g')
+    .selectAll('rect.band')
+    .data(new Array(numYears));
+  const bandWidth = gWidth / numYears;
+  bands
+    .enter()
+    .append('rect')
+    .attr('height', gHeight)
+    .attr('width', bandWidth)
+    .attr('class', 'band')
+    .attr('x', (_, i) => bandWidth * i)
 };
 
 d3.json('data/pipe_counts.json').then(json => {
   data = json;
-  let i = 0;
-  drawChart(Math.floor(i / 2), i % 2);
-  i++;
-  const int = setInterval(() => {
-    drawChart(Math.floor(i / 2), (i % 2) * 3);
-    i++;
-    console.log(i);
-    if (i > 8) {
-      clearInterval(int);
-    }
-  }, 3500);
+  drawChart(0, 0);
+  youDrawIt(0, 0);
 });
 
 /*
-const width = 600;
-const height = 300;
-const numPoints = 10;
-const svg = d3
-  .select('svg#you-draw-it')
-  .attr('width', width)
-  .attr('height', height);
-
-const bands = svg
-  .append('g')
-  .selectAll('rect.band')
-  .data(new Array(numPoints));
 
 bands
   .enter()
