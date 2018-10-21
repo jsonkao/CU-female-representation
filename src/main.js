@@ -231,10 +231,8 @@ const youDrawIt = (div, rank) => {
     .attr('class', 'band')
     .attr('x', (_, i) => bandWidth * i);
 
-  const lineGen = d3.line()
-    .x((_, i) => i * bandWidth)
-    .y(d => d)
-  const pathData = new Array(numYears);
+  const lineGen = d3.line();
+  const pathData = {};
   const path = svg.append('path').attr('class', 'yourpath');
 
   const capture = svg
@@ -248,8 +246,8 @@ const youDrawIt = (div, rank) => {
   capture.on('mousedown', () => {
     capture
       .on('mousemove', function(d, i) {
-        bandNum = Math.round(d3.event.offsetX / (gWidth / numYears));
-        pathData[bandNum] = d3.mouse(this)[1];
+        bandNum = Math.round(d3.mouse(this)[0] / (gWidth / numYears));
+        pathData[bandNum] = [bandNum * bandWidth, d3.mouse(this)[1]];
         path.datum(Object.values(pathData)).attr('d', lineGen);
       })
       .on('mouseup', () => {

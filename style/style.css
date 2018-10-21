@@ -13,7 +13,8 @@
 }
 
 .yourpath {
-  fill: #008000;
+  stroke: #008000;
+  fill: none;
   stroke-width: 2px;
 }
 
