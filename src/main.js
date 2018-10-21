@@ -209,7 +209,7 @@ class Activity {
     const chart = new LineGraph(
       getPercents(this.div, rank),
       this.id,
-      `${ranks[rank]} by Gender in ${divisions[div]}`,
+      `${ranks[rank]} by Gender in ${divisions[this.div]}`,
     );
     chart.drawSkeleton();
     chart
@@ -225,7 +225,7 @@ class Activity {
     const chart = new LineGraph(
       getPercents(this.div, rank),
       this.id,
-      `${ranks[rank]} by Gender in ${divisions[div]}`
+      `${ranks[rank]} by Gender in ${divisions[this.div]}`
     );
     const svg = chart.getSVG();
     const { gWidth, gHeight } = chart.getDimensions();
