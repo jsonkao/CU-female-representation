@@ -31,8 +31,17 @@ const getPercents = (divIdx, rankIdx) => {
 const width = 700,
   height = 450;
 
-const createLineGraph = title => {
+// We use a generator to allow drawing things onto the svg before text and axes.
+function* createLineGraph(title) {
   const margin = { top: 50, right: 50, bottom: 50, left: 50 };
+  // Add chart svg to the page, use margin conventions
+  const svg = d3
+    .select('div#chart-container')
+    .append('svg')
+    .attr('width', width)
+    .attr('height', height)
+    .append('g')
+    .attr('transform', `translate(${margin.left}, ${margin.top})`);
   const gWidth = width - margin.left - margin.right;
   const gHeight = height - margin.top - margin.bottom;
 
@@ -47,14 +56,7 @@ const createLineGraph = title => {
     .domain([0, 1])
     .range([gHeight, 0]);
 
-  // Add chart svg to the page, use margin conventions
-  const svg = d3
-    .select('div#chart-container')
-    .append('svg')
-    .attr('width', width)
-    .attr('height', height)
-    .append('g')
-    .attr('transform', `translate(${margin.left}, ${margin.top})`);
+  yield { svg, gWidth, gHeight, xScale, yScale };
 
   // Add chart title
   svg
@@ -96,21 +98,13 @@ const createLineGraph = title => {
     .attr('text-anchor', 'middle')
     .attr('class', 'parity-label')
     .text('Equal Number of Women and Men'.toUpperCase());
-
-  return { svg, xScale, yScale, gWidth, gHeight};
 }
 
 const drawChart = (div, rank) => {
+  const chart = createLineGraph(`${ranks[rank]} by Gender in ${divisions[div]}`);
+  const { value: { svg, xScale, yScale, gWidth, gHeight } } = chart.next();
+  chart.next(); // second call to generator unpauses the function; defaults are drawn.
   const percents = getPercents(div, rank);
-  
-  const {
-    svg,
-    xScale,
-    yScale,
-
-    gWidth,
-    gHeight,
-  } = createLineGraph(`${ranks[rank]} by Gender in ${divisions[div]}`);
 
   const lineGen = d3
     .line()
@@ -221,14 +215,8 @@ const drawChart = (div, rank) => {
 };
 
 const youDrawIt = (div, rank) => {
-  const {
-    svg,
-    xScale,
-    yScale,
-
-    gWidth,
-    gHeight,
-  } = createLineGraph(`${ranks[rank]} by Gender in ${divisions[div]}`);
+  const chart = createLineGraph(`${ranks[rank]} by Gender in ${divisions[div]}`);
+  const { value: { svg, xScale, yScale, gWidth, gHeight } } = chart.next();
 
   const bands = svg
     .append('g')
@@ -241,7 +229,34 @@ const youDrawIt = (div, rank) => {
     .attr('height', gHeight)
     .attr('width', bandWidth)
     .attr('class', 'band')
-    .attr('x', (_, i) => bandWidth * i)
+    .attr('x', (_, i) => bandWidth * i);
+
+  const lineGen = d3.line()
+    .x((_, i) => i * bandWidth)
+    .y(d => d)
+  const pathData = new Array(numYears);
+  const path = svg.append('path').attr('class', 'yourpath');
+
+  const capture = svg
+    .append('rect')
+    .attr('class', 'background')
+    .attr('width', gWidth)
+    .attr('height', gHeight)
+    .attr('fill', 'none')
+    .attr('pointer-events', 'all');
+
+  capture.on('mousedown', () => {
+    capture
+      .on('mousemove', function(d, i) {
+        bandNum = Math.round(d3.event.offsetX / (gWidth / numYears));
+        pathData[bandNum] = d3.mouse(this)[1];
+        path.datum(Object.values(pathData)).attr('d', lineGen);
+      })
+      .on('mouseup', () => {
+        capture.on('mousemove', null).on('mouseup', null);
+      });
+  });
+  chart.next(); // second call to generator unpauses the function; defaults are drawn.
 };
 
 d3.json('data/pipe_counts.json').then(json => {
@@ -251,38 +266,6 @@ d3.json('data/pipe_counts.json').then(json => {
 });
 
 /*
-
-bands
-  .enter()
-  .append('rect')
-  .attr('height', height)
-  .attr('width', width / numPoints)
-  .attr('class', 'band')
-  .attr('x', (_, i) => width * i / numPoints);
-
 // when time for 2 fillBt's, check out https://d3indepth.com/shapes/, stack.offset()
 const fillBt = d3.area().y0(height);
-
-const pathdata = {};
-const path = svg.append('path').attr('class', 'yourpath');
-
-const capture = svg
-  .append('rect')
-  .attr('class', 'background')
-  .attr('width', width)
-  .attr('height', height)
-  .attr('fill', 'none')
-  .attr('pointer-events', 'all');
-
-capture.on('mousedown', () => {
-  capture
-    .on('mousemove', function(d, i) {
-      position = Math.round(d3.event.offsetX / (width / numPoints));
-      pathdata[position] = [position * width / numPoints, d3.mouse(this)[1]];
-      path.datum(Object.values(pathdata)).attr('d', fillBt);
-    })
-    .on('mouseup', () => {
-      capture.on('mousemove', null).on('mouseup', null);
-    });
-});
 */
