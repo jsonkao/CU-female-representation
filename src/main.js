@@ -245,11 +245,15 @@ const youDrawIt = (div, rank) => {
     .attr('pointer-events', 'all');
 
   let isFirstTouch = true;
+  let maxBand = 0;
   capture.on('mousedown', () => {
     capture
       .on('mousemove', function(d, i) {
         const [x, y] = d3.mouse(this);
         bandNum = Math.round(x / (gWidth / numBands));
+        if (bandNum > maxBand) {
+          maxBand = bandNum;
+        }
         pathData[bandNum] = [bandNum * bandWidth, y];
         if (isFirstTouch) {
           for (let i = 0; i < bandNum; i++) {
@@ -257,9 +261,13 @@ const youDrawIt = (div, rank) => {
           }
           isFirstTouch = false;
         }
-        if (bandNum === numBands) {
-          // make "Is done?" button visible
+        if (bandNum === numBands) { // all points have been drawn
+          // later, transition this to button. for now, instant call to showAnswer
+          showAnswer(svg, div, rank);
         }
+
+        d3.selectAll('rect.band').classed('highlighted', (_, i) => i >= maxBand);
+
         path.datum(Object.values(pathData)).attr('d', lineGen);
       })
       .on('mouseup', () => {
@@ -271,8 +279,9 @@ const youDrawIt = (div, rank) => {
 
 d3.json('data/pipe_counts.json').then(json => {
   data = json;
+  // todo: combine these two functions into one (arg = division)
   drawChart(0, 0);
-  youDrawIt(0, 0);
+  youDrawIt(0, 3);
 });
 
 /*

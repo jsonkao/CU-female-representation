@@ -32,10 +32,6 @@
 
 .axis .tick text {
   font-family: Roboto;
-  -moz-user-select: none;
-  -khtml-user-select: none;
-  -webkit-user-select: none;
-  -ms-user-select: none;
   user-select: none;
 }
 
@@ -57,6 +53,7 @@
 .title {
   font-family: Atlas Grotesk;
   font-size: 14px;
+  user-select: none;
 }
 
 .area-label {
@@ -76,9 +73,10 @@
   font-size: 11px;
   fill: #222;
   opacity: 0.8;
-  -moz-user-select: none;
-  -khtml-user-select: none;
-  -webkit-user-select: none;
-  -ms-user-select: none;
   user-select: none;
+}
+
+.highlighted {
+  fill: yellow;
+  fill-opacity: 0.4;
 }
