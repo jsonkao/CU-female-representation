@@ -289,12 +289,18 @@ class Activity {
   };
 }
 
+let actNum = 1;
+function next() {  
+  new Activity(actNum++);
+  if (actNum >= 4) {
+    document.getElementById('nextBtn').style('display', 'none');
+  }
+};
+
 d3.json('data/pipe_counts.json').then(json => {
   data = json;
+  alert('This is a work in progress of a You-Draw-It. On the blank charts, draw/predict the female representation line.');
   new Activity(0);
-  new Activity(1);
-  new Activity(2);
-  new Activity(3);
 });
 
 /*
