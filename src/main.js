@@ -357,7 +357,7 @@ function next() {
 
 d3.json('data/pipe_counts.json').then(json => {
   data = json;
-  alert('This is a work in progress of a You-Draw-It. On the blank charts, draw/predict the female representation line.');
+  // alert('This is a work in progress of a You-Draw-It. On the blank charts, draw/predict the female representation line.');
   new Activity(0);
 });
 
