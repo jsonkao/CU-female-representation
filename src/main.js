@@ -113,7 +113,7 @@ function LineGraph(data, selectorId, title) {
       .append('path')
       .datum(data)
       .attr('class', 'line')
-      .attr('d', lineGenerator);   
+      .attr('d', lineGenerator);
 
     // Draw path over a specified amount of time
     const totalLength = line.node().getTotalLength();
@@ -196,11 +196,9 @@ function LineGraph(data, selectorId, title) {
 class Activity {
   constructor(div) {
     this.div = div;
-    this.id = divisions[div];
-
-    const ra = ['ab', 'cd', 'ef', 'gh'];
-    this.id = ra[div];
+    this.id = divisions[div].replace(/\s/g, '-');
     d3.select('div#chart-container').append('div').attr('id', this.id);
+
     this.drawChart(0);
     this.youDrawIt(3);
   }
