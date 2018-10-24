@@ -156,7 +156,7 @@ function LineGraph(div, rank, selectorId) {
         );    
   };
 
-  this.drawEndpoints = () => {    
+  this.drawEndpoints = () => {
     const dots = svg
       .selectAll('.dot')
       .data([ START_YEAR, END_YEAR ]);
@@ -254,7 +254,6 @@ class Activity {
 
     const capture = svg
       .append('rect')
-      .attr('class', 'background')
       .attr('width', gWidth)
       .attr('height', gHeight)
       .attr('fill', 'none')
@@ -275,6 +274,8 @@ class Activity {
         .style('visibility', 'hidden')
         .on('end', () => path.attr('d', null).style('visibility', 'visible'));
       svg.selectAll('rect.band').classed('highlighted', false);
+      btnContainer.selectAll('button').attr('disabled', true);
+      svg.selectAll('.dot').remove();
     };
     const restartBtn = btnContainer.append('button')
       .classed('button', true)
@@ -284,7 +285,10 @@ class Activity {
 
     const concludeDrawing = () => {
       chart.drawLine();
-      restartBtn.attr('disabled', true);
+      btnContainer.selectAll('button').attr('disabled', true);
+
+      // stops mouse events from propagating up to capture, disabling drag funcitonality
+      capture.attr('pointer-events', 'none');
     };
     const doneBtn = btnContainer.append('button')
       .classed('button', true)
@@ -292,6 +296,7 @@ class Activity {
       .text("I'm Done")
       .on('click', () => concludeDrawing());
 
+    const { xScale, yScale } = chart.getScales();
     reset();
     capture.on('mousedown', () => {
       capture
@@ -310,11 +315,24 @@ class Activity {
             isFirstTouch = false;
           }
 
-          if (bandNum === numBands) { // all points have been drawn
+          if (!pathData.includes(undefined)) { // all points have been drawn
             doneBtn.attr('disabled', null);
           }
           svg.selectAll('rect.band').classed('highlighted', (_, i) => i >= maxBand);
           path.datum(pathData).attr('d', lineGen);
+
+          const definedPathData = Object.values(pathData);
+          const dots = svg
+            .selectAll('.dot')
+            .data(definedPathData);
+          dots
+            .enter()
+            .append('circle')
+            .attr('class', 'dot')
+            .attr('r', 4.5)
+            .merge(dots)
+            .attr('cx', d => d[0])
+            .attr('cy', d => d[1]);
         })
         .on('mouseup', () => {
           capture.on('mousemove', null).on('mouseup', null);
