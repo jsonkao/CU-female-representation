@@ -4,9 +4,9 @@ const YEARS = d3.range(START_YEAR, END_YEAR + 1);
 const numYears = YEARS.length;
 
 const divisions = [
+  'Humanities',
   'Social Sciences',
   'Natural Sciences',
-  'Humanities',
   'Arts and Sciences',
 ];
 const ranks = [
@@ -283,8 +283,12 @@ class Activity {
       .text('Start Over')
       .on('click', () => reset());
 
-    const concludeDrawing = () => {
-      chart.drawLine();
+    const concludeDrawing = () => {      
+      chart
+        .drawLine()
+        .on('end', () => {
+          chart.drawEndpoints(); // label line endpoints
+        });
       btnContainer.selectAll('button').attr('disabled', true);
       svg.selectAll('.dot').remove();
 

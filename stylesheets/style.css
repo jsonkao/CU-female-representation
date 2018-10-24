@@ -23,9 +23,9 @@
 }
 
 .yourpath {
-  stroke: #008000;
+  stroke: #80b1d3;
   fill: none;
-  stroke-width: 2px;
+  stroke-width: 2.5px;
 }
 
 .area {
@@ -33,11 +33,11 @@
 }
 
 .below {
-  fill: #fdbb84;
+  fill: #fb8072;
 }
 
 .above {
-  fill: #99d8c9;
+  fill: #8dd3c7;
 }
 
 .axis .tick text {
@@ -46,18 +46,18 @@
   font-size: 13px;
 }
 
-.y.axis g:nth-child(2) {
+.y.axis g:nth-child(2) { /* removes first 0% label to help with crowdedness */
   display: none;
 }
 
 .line {
-  stroke: #333;
+  stroke: #2B4141;
   stroke-width: 1.5px;
   fill: none;
 }
 
 .dot {    
-  fill: red;
+  fill: #003f5c;
 }
 
 .label {
@@ -88,11 +88,11 @@
 .parity-label {
   font-family: Roboto;
   font-size: 11px;
-  fill: #222;
+  fill: #2B4141;
   user-select: none;
 }
 
 .highlighted {
-  fill: yellow;
-  fill-opacity: 0.4;
+  fill: #ffffb3;
+  fill-opacity: 0.8;
 }
