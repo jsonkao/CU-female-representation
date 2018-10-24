@@ -4,10 +4,10 @@ const YEARS = d3.range(START_YEAR, END_YEAR + 1);
 const numYears = YEARS.length;
 
 const divisions = [
-  'Arts and Sciences',
-  'Humanities',
-  'Natural Sciences',
   'Social Sciences',
+  'Natural Sciences',
+  'Humanities',
+  'Arts and Sciences',
 ];
 const ranks = [
   'Undergraduate Major and Concentrator Students',
@@ -185,7 +185,7 @@ function LineGraph(div, rank, selectorId) {
       .style('opacity', 0)
       .style(
         'transform',
-        (_, i) => `translate(${i === 0 ? '5px, 18px' : '-32px, -12px'})`,
+        (_, i) => `translate(${i === 0 ? '6px, 19px' : '-32px, -11px'})`,
       )
       .transition()
       .duration(500)
@@ -225,7 +225,7 @@ class Activity {
   }
 
   youDrawIt(rank) {
-    this.container
+    const container = this.container
       .append('div')
       .attr('id', this.id + '-youdrawit');
     const chart = new LineGraph(
@@ -249,8 +249,7 @@ class Activity {
       .attr('class', 'band')
       .attr('x', (_, i) => bandWidth * i);
 
-    const lineGen = d3.line();
-    const pathData = new Array(numBands);
+    const lineGen = d3.line().defined(d => d);
     const path = svg.append('path').attr('class', 'yourpath');
 
     const capture = svg
@@ -261,9 +260,39 @@ class Activity {
       .attr('fill', 'none')
       .attr('pointer-events', 'all');
 
-    let isFirstTouch = true;
-    let maxBand = 0;
-    const selector = `#${this.id}`; // todo: make this better
+    let isFirstTouch;
+    let maxBand;
+    let pathData;
+
+    const btnContainer = container.append('div').classed('btn-container', true);
+
+    const reset = () => {
+      isFirstTouch = true;
+      maxBand = -1;
+      pathData = new Array(numBands);
+      path
+        .transition()
+        .style('visibility', 'hidden')
+        .on('end', () => path.attr('d', null).style('visibility', 'visible'));
+      svg.selectAll('rect.band').classed('highlighted', false);
+    };
+    const restartBtn = btnContainer.append('button')
+      .classed('button', true)
+      .attr('disabled', true)
+      .text('Start Over')
+      .on('click', () => reset());
+
+    const concludeDrawing = () => {
+      chart.drawLine();
+      restartBtn.attr('disabled', true);
+    };
+    const doneBtn = btnContainer.append('button')
+      .classed('button', true)
+      .attr('disabled', true)
+      .text("I'm Done")
+      .on('click', () => concludeDrawing());
+
+    reset();
     capture.on('mousedown', () => {
       capture
         .on('mousemove', function(d, i) {
@@ -274,6 +303,7 @@ class Activity {
           }
           pathData[bandNum] = [bandNum * bandWidth, y];
           if (isFirstTouch) {
+            restartBtn.attr('disabled', null);
             for (let i = 0; i < bandNum; i++) {
               pathData[i] = [i * bandWidth, y];
             }
@@ -281,11 +311,10 @@ class Activity {
           }
 
           if (bandNum === numBands) { // all points have been drawn
-            chart.drawLine();
+            doneBtn.attr('disabled', null);
           }
-          d3.select(selector).selectAll('rect.band').classed('highlighted', (_, i) => i >= maxBand);
-
-          path.datum(Object.values(pathData)).attr('d', lineGen);
+          svg.selectAll('rect.band').classed('highlighted', (_, i) => i >= maxBand);
+          path.datum(pathData).attr('d', lineGen);
         })
         .on('mouseup', () => {
           capture.on('mousemove', null).on('mouseup', null);
@@ -299,7 +328,7 @@ let actNum = 1;
 function next() {  
   new Activity(actNum++);
   if (actNum >= 4) {
-    document.getElementById('nextBtn').style.display = 'none';
+    d3.select('button#nextBtn').style('display', 'none');
   }
 };
 
