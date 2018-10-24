@@ -28,14 +28,17 @@ const getPercents = (divIdx, rankIdx) => {
   return women.map((w, i) => w / (w + men[i]));
 };
 
-const width = 700,
-  height = 450;
+const width = 820,
+  height = 500;
 
-function LineGraph(data, selectorId, title) {
-  const margin = { top: 50, right: 50, bottom: 50, left: 50 };
+function LineGraph(div, rank, selectorId) {
+  const titleText = `${ranks[rank]} by Gender in the ${divisions[div]}`;
+  const data = getPercents(div, rank);
+  const container = d3.select(`#${selectorId}`);
+
+  const margin = { top: 10, right: 50, bottom: 50, left: 50 };
   // Add chart svg to the page, use margin conventions
-  const svg = d3
-    .select(`#${selectorId}`)
+  const svg = container
     .append('svg')
     .attr('width', width)
     .attr('height', height)
@@ -64,13 +67,10 @@ function LineGraph(data, selectorId, title) {
 
   this.drawSkeleton = function() {
     // Add chart title
-    svg
-      .append('text')
-      .attr('x', gWidth / 2)
-      .attr('y', -margin.top / 3)
-      .attr('text-anchor', 'middle')
+    const title = container
+      .insert('p', ':first-child')
       .attr('class', 'title')
-      .text(title);
+      .text(titleText);
 
     // Call the x axis and remove thousand-grouping formatting from years
     // (e.g. 2,004 --> 2004)
@@ -185,7 +185,7 @@ function LineGraph(data, selectorId, title) {
       .style('opacity', 0)
       .style(
         'transform',
-        (_, i) => `translate(${i === 0 ? '5px, 15px' : '-28px, -9px'})`,
+        (_, i) => `translate(${i === 0 ? '5px, 18px' : '-32px, -12px'})`,
       )
       .transition()
       .duration(500)
@@ -197,17 +197,22 @@ class Activity {
   constructor(div) {
     this.div = div;
     this.id = divisions[div].replace(/\s/g, '-');
-    d3.select('div#chart-container').append('div').attr('id', this.id);
+    this.container = d3.select('div#container')
+      .append('div')
+      .attr('class', 'chart-container')
 
     this.drawChart(0);
     this.youDrawIt(3);
   }
 
   drawChart(rank) {
+    this.container
+      .append('div')
+      .attr('id', this.id + '-chart');
     const chart = new LineGraph(
-      getPercents(this.div, rank),
-      this.id,
-      `${ranks[rank]} by Gender in ${divisions[this.div]}`,
+      this.div,
+      rank,
+      this.id + '-chart',
     );
     chart.drawSkeleton();
     chart
@@ -220,10 +225,13 @@ class Activity {
   }
 
   youDrawIt(rank) {
+    this.container
+      .append('div')
+      .attr('id', this.id + '-youdrawit');
     const chart = new LineGraph(
-      getPercents(this.div, rank),
-      this.id,
-      `${ranks[rank]} by Gender in ${divisions[this.div]}`
+      this.div,
+      rank,
+      this.id + '-youdrawit',
     );
     const svg = chart.getSVG();
     const { gWidth, gHeight } = chart.getDimensions();
@@ -291,7 +299,7 @@ let actNum = 1;
 function next() {  
   new Activity(actNum++);
   if (actNum >= 4) {
-    document.getElementById('nextBtn').style('display', 'none');
+    document.getElementById('nextBtn').style.display = 'none';
   }
 };
 

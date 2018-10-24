@@ -5,6 +5,16 @@
   font-style: normal;
 }
 
+#container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.chart-container {
+
+}
+
 .band {
   fill: #fff;
   stroke-opacity: 1;
@@ -33,6 +43,11 @@
 .axis .tick text {
   font-family: Roboto;
   user-select: none;
+  font-size: 13px;
+}
+
+.y.axis g:nth-child(2) {
+  display: none;
 }
 
 .line {
@@ -47,18 +62,20 @@
 
 .label {
   font-family: Atlas Grotesk;
-  font-size: 12px;
+  font-size: 13px;
 }
 
 .title {
-  font-family: Atlas Grotesk;
-  font-size: 14px;
+  font-family: Roboto;
+  font-size: 18px;
+  margin-bottom: 5px;
+  text-align: center;
   user-select: none;
 }
 
 .area-label {
   font-family: Atlas Grotesk;
-  font-size: 12px;
+  font-size: 13px;
   fill: #111;
 }
 
