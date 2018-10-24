@@ -268,7 +268,7 @@ class Activity {
     const reset = () => {
       isFirstTouch = true;
       maxBand = -1;
-      pathData = new Array(numBands);
+      pathData = new Array(numBands + 1);
       path
         .transition()
         .style('visibility', 'hidden')
@@ -286,6 +286,7 @@ class Activity {
     const concludeDrawing = () => {
       chart.drawLine();
       btnContainer.selectAll('button').attr('disabled', true);
+      svg.selectAll('.dot').remove();
 
       // stops mouse events from propagating up to capture, disabling drag funcitonality
       capture.attr('pointer-events', 'none');
