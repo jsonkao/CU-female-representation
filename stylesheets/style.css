@@ -50,6 +50,68 @@
   display: none;
 }
 
+.btn-container {
+  display: flex;
+  padding: 0 20%;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.button {
+  border: none;
+  border-radius: 5px;
+  padding: 15px 0;
+  width: 200px;
+  font-family: Atlas Grotesk;
+  font-size: 13px;
+  color: inherit;
+  background: none;
+  cursor: pointer;
+  display: inline-block;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  outline: none;
+  position: relative;
+  -webkit-transition: all 0.3s;
+  -moz-transition: all 0.3s;
+  transition: all 0.3s;
+  background: #cb4e4e;
+  color: #fff;
+  box-shadow: 0 6px #ab3c3c;
+  -webkit-transition: none;
+  -moz-transition: none;
+  transition: none;
+}
+
+.button:hover {
+  box-shadow: 0 4px #ab3c3c;
+  top: 2px;
+}
+
+.button:active {
+  box-shadow: 0 0 #ab3c3c;
+  top: 6px;
+}
+
+.button:disabled,
+.button[disabled] {
+  background-color: #cccccc;
+  color: #666666;
+  box-shadow: 0 6px #888;
+}
+
+.button:disabled:hover,
+.button[disabled]:hover {
+  box-shadow: 0 4px #888;
+  top: 2px;
+}
+
+.button:disabled:active,
+.button[disabled]:active {
+  box-shadow: 0 0 #ab3c3c;
+  top: 6px;
+}
+
 .line {
   stroke: #2B4141;
   stroke-width: 1.5px;
