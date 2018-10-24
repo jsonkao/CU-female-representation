@@ -344,6 +344,7 @@ class Activity {
         });
     });
     chart.drawSkeleton();
+    capture.raise(); // moves our pointer event capturer on top of chart elements
   };
 }
 
