@@ -4,10 +4,10 @@ const YEARS = d3.range(START_YEAR, END_YEAR + 1);
 const numYears = YEARS.length;
 
 const divisions = [
+  'Arts and Sciences',
+  'Natural Sciences',
   'Humanities',
   'Social Sciences',
-  'Natural Sciences',
-  'Arts and Sciences',
 ];
 const ranks = [
   'Undergraduate Major and Concentrator Students',
@@ -234,6 +234,7 @@ class Activity {
   }
 
   youDrawIt(rank) {
+    // this.container.append('p').text('Instructions? Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam dapibus nulla et arcu ullamcorper tincidunt.');
     const container = this.container
       .append('div')
       .attr('id', this.id + '-youdrawit');

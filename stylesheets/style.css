@@ -5,6 +5,15 @@
   font-style: normal;
 }
 
+p {
+  font-family: Open Sans;
+  font-size: 14px;
+  width: 70%;
+  margin: 10px auto;
+  margin-bottom: 50px;
+  line-height: 1.8;
+}
+
 #container {
   display: flex;
   flex-direction: column;
@@ -17,12 +26,13 @@
 }
 
 .chart-container > div {
-  margin-bottom: 80px;
+  margin-bottom: 100px;
 }
 
 .axis-label {
   font-family: Roboto;
   font-size: 15px;
+  user-select: none;
 }
 
 .y.axis-label {
