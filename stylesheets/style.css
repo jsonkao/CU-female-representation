@@ -18,7 +18,7 @@ p {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-top: 100px;
+  margin-top: 130px;
 }
 
 .chart-container {
@@ -35,9 +35,13 @@ p {
   user-select: none;
 }
 
+.x.axis-label {
+  transform: translateY(40px);
+}
+
 .y.axis-label {
   transform-origin: left;
-  transform: rotate(-90deg) translate(-20px, -17px);
+  transform: rotate(-90deg) translate(-20px, -18px);
 }
 
 .band {
@@ -50,7 +54,7 @@ p {
 .yourpath {
   stroke: #80b1d3;
   fill: none;
-  stroke-width: 2.5px;
+  stroke-width: 2px;
 }
 
 .area {
@@ -80,6 +84,7 @@ p {
   padding: 0 20%;
   justify-content: space-around;
   align-items: center;
+  margin-top: 20px;
 }
 
 .button {
@@ -138,8 +143,8 @@ p {
 }
 
 .line {
-  stroke: #2B4141;
-  stroke-width: 1.5px;
+  stroke: #0F3E3F;
+  stroke-width: 2.5px;
   fill: none;
 }
 
@@ -162,8 +167,24 @@ p {
 
 .area-label {
   font-family: Atlas Grotesk;
-  font-size: 13px;
+  font-size: 15px;
   fill: #111;
+}
+
+.area-label-container {
+  opacity: 0.8;
+  width: 80px;
+  height: 30px;
+  fill: #fff;
+}
+
+.area-label-container.women {
+  transform: translate(-40px, -21px);
+}
+
+.area-label-container.men {
+  transform: translate(-27px, -21px);
+  width: 54px;
 }
 
 .parity-line {

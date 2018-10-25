@@ -65,6 +65,22 @@ function LineGraph(div, rank, selectorId) {
   this.getSVG = () => svg;
   this.getLastDatum = () => data[data.length - 1];
 
+  this.labelAxes = () => {    
+    svg.append('text') // y-axis
+      .attr('x', 0)
+      .attr('y', gHeight / 2)
+      .text('Percent Women')
+      .attr('class', 'y axis-label');
+    svg.append('text') // x-axis
+      .attr('x', gWidth / 2)
+      .attr('y', gHeight)
+      .attr('text-anchor', 'middle')
+      .attr('class', 'parity-label')
+      .attr('class', 'x axis-label')
+      .text('Year');
+
+  };
+
   this.drawSkeleton = () => {
     // Add chart title
     const title = container
@@ -103,15 +119,8 @@ function LineGraph(div, rank, selectorId) {
       .attr('text-anchor', 'middle')
       .attr('class', 'parity-label')
       .text('Equal Number of Women and Men'.toUpperCase());
-  };
 
-  this.labelYAxis = () => {
-    const label = svg
-      .append('text')
-      .attr('x', 0)
-      .attr('y', gHeight / 2)
-      .text('Percent Women')
-      .attr('class', 'y axis-label');
+    this.labelAxes();
   };
 
   this.drawLine = (duration = 2500) => {
@@ -151,18 +160,25 @@ function LineGraph(div, rank, selectorId) {
         .style('fill-opacity', 1)
         .on('end', () => {
           svg
-            .append('text')
-            .attr('class', 'area-label')
-            .attr('x', gWidth - 6)
-            .attr('y', gHeight * (1 - data[data.length - 1]) + (isAbove ? -1 : 1) * gHeight / 6)
-            .attr('text-anchor', 'end')
-            .text(isAbove ? 'MEN' : 'WOMEN')
+            .append('rect')
+            .attr('class', `area-label-container ${isAbove? 'men' : 'women'}`)
+            .attr('x', gWidth / 2)
+            .attr('y', gHeight * (1 - data[Math.floor(data.length/2)]) + (isAbove ? -1 : 1) * gHeight / 5)
             .attr('opacity', 0)
             .transition()
               .duration(500)
-              .attr('opacity', 0.8);
-        }
-        );    
+              .attr('opacity', 0.9)
+          svg.append('text')
+            .attr('class', 'area-label')
+            .attr('x', gWidth / 2)
+            .attr('y', gHeight * (1 - data[Math.floor(data.length/2)]) + (isAbove ? -1 : 1) * gHeight / 5)
+            .attr('text-anchor', 'middle')
+            .text(isAbove ? 'MEN' : 'WOMEN')
+            .attr('opacity', 0)            
+            .transition()
+              .duration(500)
+              .attr('opacity', 0.8)
+        });    
   };
 
   this.drawEndpoints = () => {
@@ -359,7 +375,6 @@ class Activity {
         });
     });
     chart.drawSkeleton();
-    chart.labelYAxis();
     capture.raise(); // moves our pointer event capturer on top of chart elements
   };
 }
