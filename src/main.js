@@ -28,7 +28,7 @@ const getPercents = (divIdx, rankIdx) => {
   return women.map((w, i) => w / (w + men[i]));
 };
 
-const width = 820,
+const width = 860,
   height = 500;
 
 function LineGraph(div, rank, selectorId) {
@@ -36,7 +36,7 @@ function LineGraph(div, rank, selectorId) {
   const data = getPercents(div, rank);
   const container = d3.select(`#${selectorId}`);
 
-  const margin = { top: 10, right: 50, bottom: 50, left: 50 };
+  const margin = { top: 10, right: 70, bottom: 50, left: 70 };
   // Add chart svg to the page, use margin conventions
   const svg = container
     .append('svg')
@@ -65,7 +65,7 @@ function LineGraph(div, rank, selectorId) {
   this.getSVG = () => svg;
   this.getLastDatum = () => data[data.length - 1];
 
-  this.drawSkeleton = function() {
+  this.drawSkeleton = () => {
     // Add chart title
     const title = container
       .insert('p', ':first-child')
@@ -103,6 +103,15 @@ function LineGraph(div, rank, selectorId) {
       .attr('text-anchor', 'middle')
       .attr('class', 'parity-label')
       .text('Equal Number of Women and Men'.toUpperCase());
+  };
+
+  this.labelYAxis = () => {
+    const label = svg
+      .append('text')
+      .attr('x', 0)
+      .attr('y', gHeight / 2)
+      .text('Percent Women')
+      .attr('class', 'y axis-label');
   };
 
   this.drawLine = (duration = 2500) => {
@@ -175,7 +184,7 @@ function LineGraph(div, rank, selectorId) {
     const labels = svg
       .selectAll('.label')
       .data([ START_YEAR, END_YEAR ]);
-    labels
+    return labels
       .enter()
       .append('text')
       .attr('class', 'label')
@@ -281,19 +290,24 @@ class Activity {
       .classed('button', true)
       .attr('disabled', true)
       .text('Start Over')
-      .on('click', () => reset());
+      .on('click', reset);
 
-    const concludeDrawing = () => {      
+    const concludeDrawing = () => {
+      btnContainer.selectAll('button').attr('disabled', true)
       chart
         .drawLine()
         .on('end', () => {
-          chart.drawEndpoints(); // label line endpoints
-        });
-      btnContainer.selectAll('button').attr('disabled', true);
-      svg.selectAll('.dot').remove();
+          svg.selectAll('.dot').remove();
 
-      // stops mouse events from propagating up to capture, disabling drag funcitonality
-      capture.attr('pointer-events', 'none');
+          // stops mouse events from propagating up to capture, disabling drag funcitonality
+          capture.attr('pointer-events', 'none');
+
+          chart
+            .drawEndpoints()
+            .on('end', () => {
+              restartBtn.attr('disabled', null).text('Next Graph').on('click', next);
+            });
+        });
     };
     const doneBtn = btnContainer.append('button')
       .classed('button', true)
@@ -344,22 +358,18 @@ class Activity {
         });
     });
     chart.drawSkeleton();
+    chart.labelYAxis();
     capture.raise(); // moves our pointer event capturer on top of chart elements
   };
 }
 
-let actNum = 1;
-function next() {  
-  new Activity(actNum++);
-  if (actNum >= 4) {
-    d3.select('button#nextBtn').style('display', 'none');
-  }
-};
+let actNum = 0;
+const next = () => actNum < 4 && new Activity(actNum++);
 
 d3.json('data/pipe_counts.json').then(json => {
   data = json;
   // alert('This is a work in progress of a You-Draw-It. On the blank charts, draw/predict the female representation line.');
-  new Activity(0);
+  next();
 });
 
 /*
