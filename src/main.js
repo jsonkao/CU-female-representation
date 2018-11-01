@@ -8,7 +8,7 @@ const numYears = YEARS.length;
 // Copy for what happened in each division and rank.
 const descriptions = [
   [
-    'wiggle around 50%. There is no clear trend.',
+    'fluctuated around 50%.',
     '', '',
     'has grown at a steady but slow rate.'
   ],
@@ -44,7 +44,7 @@ const getPercents = (divIdx, rankIdx) => {
 const width = 860,
   height = 500;
 
-function LineGraph(div, rank, selectorId, descriptionText, makeTitle=false, ) {
+function LineGraph(div, rank, selectorId, descriptionText, makeTitle=false) {
   const titleText = `${ranks[rank]} by Gender in the ${divisions[div]}`;
   const data = getPercents(div, rank);
   const container = d3.select(`#${selectorId}`);
@@ -84,7 +84,7 @@ function LineGraph(div, rank, selectorId, descriptionText, makeTitle=false, ) {
     svg.append('text') // y-axis
       .attr('x', 0)
       .attr('y', gHeight / 2)
-      .text('Percent Women')
+      .text('Percent women')
       .attr('class', 'y axis-label');
     svg.append('text') // x-axis
       .attr('x', gWidth / 2)
@@ -107,7 +107,7 @@ function LineGraph(div, rank, selectorId, descriptionText, makeTitle=false, ) {
 
     container
       .insert('p', ':first-child')
-      .html(`From ${START_YEAR} to ${END_YEAR}, among the ${ranks[rank]} of the ${divisions[div]}, <b>the percentage of women</b>...`);
+      .html(`From ${START_YEAR} to ${END_YEAR}, among the ${ranks[rank]} in the ${divisions[div]}, <b>the percentage of women</b>...`);
 
     // Call the x axis and remove thousand-grouping formatting from years
     // (e.g. 2,004 --> 2004)
@@ -218,6 +218,22 @@ function LineGraph(div, rank, selectorId, descriptionText, makeTitle=false, ) {
       .style('opacity', 0)
       .transition()
         .duration(500)
+        .style('opacity', 1)
+
+    const lines = svg
+      .selectAll('.label-line')
+      .data([ START_YEAR, END_YEAR ]);
+    lines
+      .enter()
+      .append('line')
+      .attr('class', 'label-line')
+      .attr('x1', xScale)
+      .attr('x2', (d, i) => xScale(d) + (1 - 2*i) * 30)
+      .attr('y1', yScaleFromYear)
+      .attr('y2', d => yScaleFromYear(d) + 45)
+      .style('opacity', 0)
+      .transition()
+        .duration(500)
         .style('opacity', 1);
 
     const labels = svg
@@ -233,7 +249,7 @@ function LineGraph(div, rank, selectorId, descriptionText, makeTitle=false, ) {
       .style('opacity', 0)
       .style(
         'transform',
-        (_, i) => `translate(${i === 0 ? '8px, 29px' : '-49px, -13px'})`,
+        (_, i) => `translate(${i === 0 ? 32 : -77}px, 63px)`,
       )
       .transition()
       .duration(500)
@@ -333,7 +349,7 @@ class Activity {
       svg.selectAll('.dot').remove();
       drawInstruction.style('visibility', 'visible');
 
-      container.select('p.description').style('visibility', 'hidden');
+      container.select('p.descriptionn').style('visibility', 'hidden');
     };
     const restartBtn = btnContainer.append('button')
       .classed('button', true)
@@ -351,8 +367,13 @@ class Activity {
 
           // stops mouse events from propagating up to capture, disabling drag funcitonality
           capture.attr('pointer-events', 'none');
-
-          d3.select('path.yourpath').classed('completed', true);
+          svg
+            .append('text')
+            .attr('x', gWidth)
+            .attr('y', pathData[pathData.length - 1][1])
+            .attr('class', 'your-guess')
+            .text('Your Guess');
+          svg.select('path.yourpath').classed('completed', true);
 
           container.select('p.description').style('visibility', 'visible');
 
@@ -425,7 +446,7 @@ const next = () => actNum < 4 && new Activity(actNum++);
 
 d3.json('data/pipe_counts.json').then(json => {
   data = json;
-  alert('This is a work in progress of a You-Draw-It. On the blank charts, draw/predict the female representation line.');
+  // alert('This is a work in progress of a You-Draw-It. On the blank charts, draw/predict the female representation line.');
   next();
 });
 

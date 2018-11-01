@@ -172,6 +172,11 @@ p b {
   font-size: 20px;
 }
 
+.label-line {
+  stroke-width: 1.5px;
+  stroke: #333;
+}
+
 .title {
   font-family: Roboto;
   font-size: 18px;
