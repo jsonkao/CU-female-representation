@@ -3,6 +3,8 @@ const END_YEAR = 2013;
 const YEARS = d3.range(START_YEAR, END_YEAR + 1);
 const numYears = YEARS.length;
 
+// TODO: description => outcome
+
 // Copy for what happened in each division and rank.
 const descriptions = [
   [
@@ -136,7 +138,7 @@ function LineGraph(div, rank, selectorId, descriptionText, makeTitle=false, ) {
       .attr('class', 'parity-label')
       .text('Equal Number of Women and Men'.toUpperCase());
 
-    container.append('p').html(descriptions[div][rank]);
+    container.append('p').attr('class', 'description').html(descriptions[div][rank]);
 
     this.labelAxes();
   };
@@ -269,13 +271,14 @@ class Activity {
 
   youDrawIt(rank) {
     // this.container.append('p').text('Instructions? Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam dapibus nulla et arcu ullamcorper tincidunt.');
+    const selector = this.id + '-youdrawit';
     const container = this.container
       .append('div')
-      .attr('id', this.id + '-youdrawit');
+      .attr('id', selector);
     const chart = new LineGraph(
       this.div,
       rank,
-      this.id + '-youdrawit',
+      selector,
     );
     const svg = chart.getSVG();
     const { gWidth, gHeight } = chart.getDimensions();
@@ -288,7 +291,7 @@ class Activity {
       .attr('x', gWidth / 2)
       .attr('class', 'draw-instruction')
       .attr('y', gHeight / 8)
-      .text('Draw your guess...')
+      .text('Draw your guess')
     const bandWidth = gWidth / numBands;
     bands
       .enter()
@@ -326,6 +329,8 @@ class Activity {
       btnContainer.selectAll('button').attr('disabled', true);
       svg.selectAll('.dot').remove();
       drawInstruction.style('visibility', 'visible');
+
+      container.select('p.description').style('visibility', 'hidden');
     };
     const restartBtn = btnContainer.append('button')
       .classed('button', true)
@@ -345,6 +350,8 @@ class Activity {
           capture.attr('pointer-events', 'none');
 
           d3.select('path.yourpath').classed('completed', true);
+
+          container.select('p.description').style('visibility', 'visible');
 
           chart.drawArea(true);
           chart.drawArea(false);
@@ -405,6 +412,7 @@ class Activity {
         });
     });
     chart.drawSkeleton();
+    container.select('p.description').style('visibility', 'hidden');
     capture.raise(); // moves our pointer event capturer on top of chart elements
   };
 }

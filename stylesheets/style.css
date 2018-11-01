@@ -11,7 +11,7 @@ p {
   width: 70%;
   margin: 10px auto;
   line-height: 1.8;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
 }
 
 p b {
@@ -99,6 +99,7 @@ p b {
   justify-content: space-around;
   align-items: center;
   margin-top: 20px;
+  margin-bottom: 25px;
 }
 
 .button {
@@ -221,6 +222,7 @@ p b {
 
 .draw-instruction {
   text-anchor: middle;
+  text-decoration: underline;
   font-family: Roboto;
   font-size: 24px;
 }
