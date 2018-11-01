@@ -12,6 +12,9 @@ const descriptions = [
     '', '',
     'has grown at a steady but slow rate.'
   ],
+  [ '', '', '', '' ],
+  [ '', '', '', '' ],
+  [ '', '', '', '' ],
 ];
 const divisions = [
   'Arts and Sciences',
@@ -138,7 +141,7 @@ function LineGraph(div, rank, selectorId, descriptionText, makeTitle=false, ) {
       .attr('class', 'parity-label')
       .text('Equal Number of Women and Men'.toUpperCase());
 
-    container.append('p').attr('class', 'description').html(descriptions[div][rank]);
+    container.append('p').attr('class', 'description').html('...' + descriptions[div][rank]);
 
     this.labelAxes();
   };
