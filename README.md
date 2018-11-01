@@ -1,5 +1,8 @@
 # Female representation at Columbia University
+
 An analysis of female representation at Columbia University from 2004 to 2013.
+
+![alt text](https://raw.githubusercontent.com/jsonkao/CU-female-representation/master/img/Humanities%20UC%20vs.%20TF%404x.png)
 
 # Sources
 
