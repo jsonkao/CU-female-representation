@@ -7,11 +7,15 @@
 
 p {
   font-family: Open Sans;
-  font-size: 14px;
+  font-size: 17px;
   width: 70%;
   margin: 10px auto;
-  margin-bottom: 50px;
   line-height: 1.8;
+  margin-bottom: 10px;
+}
+
+p b {
+  font-weight: 700;
 }
 
 #container {
@@ -26,7 +30,12 @@ p {
 }
 
 .chart-container > div {
-  margin-bottom: 100px;
+  margin-bottom: 50px;
+}
+
+.svg-container {
+  display: flex;
+  justify-content: center;
 }
 
 .axis-label {
@@ -55,6 +64,11 @@ p {
   stroke: #80b1d3;
   fill: none;
   stroke-width: 2px;
+}
+
+.yourpath.completed {
+  stroke: #fff;
+  stroke-width: 4px;
 }
 
 .area {
@@ -154,7 +168,7 @@ p {
 
 .label {
   font-family: Atlas Grotesk;
-  font-size: 13px;
+  font-size: 20px;
 }
 
 .title {
@@ -203,4 +217,10 @@ p {
 .highlighted {
   fill: #ffffb3;
   fill-opacity: 0.8;
+}
+
+.draw-instruction {
+  text-anchor: middle;
+  font-family: Roboto;
+  font-size: 24px;
 }

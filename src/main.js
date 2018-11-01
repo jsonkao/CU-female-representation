@@ -3,10 +3,18 @@ const END_YEAR = 2013;
 const YEARS = d3.range(START_YEAR, END_YEAR + 1);
 const numYears = YEARS.length;
 
+// Copy for what happened in each division and rank.
+const descriptions = [
+  [
+    'wiggle around 50%. There is no clear trend.',
+    '', '',
+    'has grown at a steady but slow rate.'
+  ],
+];
 const divisions = [
   'Arts and Sciences',
-  'Natural Sciences',
   'Humanities',
+  'Natural Sciences',
   'Social Sciences',
 ];
 const ranks = [
@@ -31,7 +39,7 @@ const getPercents = (divIdx, rankIdx) => {
 const width = 860,
   height = 500;
 
-function LineGraph(div, rank, selectorId) {
+function LineGraph(div, rank, selectorId, descriptionText, makeTitle=false, ) {
   const titleText = `${ranks[rank]} by Gender in the ${divisions[div]}`;
   const data = getPercents(div, rank);
   const container = d3.select(`#${selectorId}`);
@@ -39,6 +47,8 @@ function LineGraph(div, rank, selectorId) {
   const margin = { top: 10, right: 70, bottom: 50, left: 70 };
   // Add chart svg to the page, use margin conventions
   const svg = container
+    .append('div')
+    .attr('class', 'svg-container')
     .append('svg')
     .attr('width', width)
     .attr('height', height)
@@ -83,10 +93,16 @@ function LineGraph(div, rank, selectorId) {
 
   this.drawSkeleton = () => {
     // Add chart title
-    const title = container
+    if (makeTitle) {
+      const title = container
+        .insert('p', ':first-child')
+        .attr('class', 'title')
+        .text(titleText);
+    }
+
+    container
       .insert('p', ':first-child')
-      .attr('class', 'title')
-      .text(titleText);
+      .html(`From ${START_YEAR} to ${END_YEAR}, among the ${ranks[rank]} of the ${divisions[div]}, <b>the percentage of women</b>...`);
 
     // Call the x axis and remove thousand-grouping formatting from years
     // (e.g. 2,004 --> 2004)
@@ -119,6 +135,8 @@ function LineGraph(div, rank, selectorId) {
       .attr('text-anchor', 'middle')
       .attr('class', 'parity-label')
       .text('Equal Number of Women and Men'.toUpperCase());
+
+    container.append('p').html(descriptions[div][rank]);
 
     this.labelAxes();
   };
@@ -210,7 +228,7 @@ function LineGraph(div, rank, selectorId) {
       .style('opacity', 0)
       .style(
         'transform',
-        (_, i) => `translate(${i === 0 ? '6px, 19px' : '-32px, -11px'})`,
+        (_, i) => `translate(${i === 0 ? '8px, 29px' : '-49px, -13px'})`,
       )
       .transition()
       .duration(500)
@@ -266,6 +284,11 @@ class Activity {
       .append('g')
       .selectAll('rect.band')
       .data(new Array(numBands));
+    const drawInstruction = svg.append('text')
+      .attr('x', gWidth / 2)
+      .attr('class', 'draw-instruction')
+      .attr('y', gHeight / 8)
+      .text('Draw your guess...')
     const bandWidth = gWidth / numBands;
     bands
       .enter()
@@ -302,6 +325,7 @@ class Activity {
       svg.selectAll('rect.band').classed('highlighted', false);
       btnContainer.selectAll('button').attr('disabled', true);
       svg.selectAll('.dot').remove();
+      drawInstruction.style('visibility', 'visible');
     };
     const restartBtn = btnContainer.append('button')
       .classed('button', true)
@@ -311,6 +335,7 @@ class Activity {
 
     const concludeDrawing = () => {
       btnContainer.selectAll('button').attr('disabled', true)
+      drawInstruction.transition().style('visibility', 'hidden');  
       chart
         .drawLine()
         .on('end', () => {
@@ -319,6 +344,11 @@ class Activity {
           // stops mouse events from propagating up to capture, disabling drag funcitonality
           capture.attr('pointer-events', 'none');
 
+          d3.select('path.yourpath').classed('completed', true);
+
+          chart.drawArea(true);
+          chart.drawArea(false);
+          svg.selectAll('rect.band').remove();
           chart
             .drawEndpoints()
             .on('end', () => {
@@ -330,7 +360,7 @@ class Activity {
       .classed('button', true)
       .attr('disabled', true)
       .text("I'm Done")
-      .on('click', () => concludeDrawing());
+      .on('click', concludeDrawing);
 
     const { xScale, yScale } = chart.getScales();
     reset();
