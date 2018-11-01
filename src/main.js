@@ -8,9 +8,10 @@ const numYears = YEARS.length;
 // Copy for what happened in each division and rank.
 const descriptions = [
   [
-    'fluctuated around 50%.',
-    '', '',
-    'has grown at a steady but slow rate.'
+    '<b>remained steady around 50%.</b>',
+    '<b>remained steady around 60%.</b>',
+    '',
+    '<b>has grown at a steady but slow rate.</b>'
   ],
   [ '', '', '', '' ],
   [ '', '', '', '' ],
@@ -49,7 +50,7 @@ function LineGraph(div, rank, selectorId, descriptionText, makeTitle=false) {
   const data = getPercents(div, rank);
   const container = d3.select(`#${selectorId}`);
 
-  const margin = { top: 10, right: 70, bottom: 50, left: 70 };
+  const margin = { top: 10, right: 100, bottom: 50, left: 100 };
   // Add chart svg to the page, use margin conventions
   const svg = container
     .append('div')
@@ -146,7 +147,7 @@ function LineGraph(div, rank, selectorId, descriptionText, makeTitle=false) {
     this.labelAxes();
   };
 
-  this.drawLine = (duration = 2500) => {
+  this.drawLine = (labelLine = false, duration = 2500) => {
     const lineGenerator = d3.line()
       .x((_, i) => xScale(START_YEAR + i))
       .y(yScale);
@@ -156,6 +157,16 @@ function LineGraph(div, rank, selectorId, descriptionText, makeTitle=false) {
       .attr('class', 'line')
       .attr('d', lineGenerator);
 
+    if (labelLine) {
+      svg
+        .append('text')
+        .attr('x', gWidth)
+        .attr('y', yScale(data[data.length - 1]))
+        .attr('class', 'line-label')      
+        .transition()
+        .delay(duration)
+        .text('Reality');
+    }
     // Draw path over a specified amount of time
     const totalLength = line.node().getTotalLength();
     return line
@@ -361,7 +372,7 @@ class Activity {
       btnContainer.selectAll('button').attr('disabled', true)
       drawInstruction.transition().style('visibility', 'hidden');  
       chart
-        .drawLine()
+        .drawLine(true)
         .on('end', () => {
           svg.selectAll('.dot').remove();
 
@@ -371,7 +382,7 @@ class Activity {
             .append('text')
             .attr('x', gWidth)
             .attr('y', pathData[pathData.length - 1][1])
-            .attr('class', 'your-guess')
+            .attr('class', 'line-label')
             .text('Your Guess');
           svg.select('path.yourpath').classed('completed', true);
 
