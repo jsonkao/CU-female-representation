@@ -4,9 +4,7 @@ build_slides:
 
 # Moves new slides to index
 %.html: notebooks/%.html
-	cp $< $@
-	rm $@
-	mv $@ index.html
+	mv $< index.html
 
 # Pushes new slides
 push:
