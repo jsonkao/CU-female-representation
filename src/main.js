@@ -42,15 +42,20 @@ const getPercents = (divIdx, rankIdx) => {
   return women.map((w, i) => w / (w + men[i]));
 };
 
-const width = 860,
-  height = 500;
+let width = 860;
+const margin = { top: 10, right: 100, bottom: 50, left: 100 };
+const windowWidth = window.innerWidth;
+if (windowWidth < width) {
+  width = windowWidth;
+  margin.left = margin.right = windowWidth / 7;
+}
+const height = width * 500 / 860;
 
 function LineGraph(div, rank, selectorId, descriptionText, makeTitle=false) {
   const titleText = `${ranks[rank]} by Gender in the ${divisions[div]}`;
   const data = getPercents(div, rank);
   const container = d3.select(`#${selectorId}`);
 
-  const margin = { top: 10, right: 100, bottom: 50, left: 100 };
   // Add chart svg to the page, use margin conventions
   const svg = container
     .append('div')
@@ -394,7 +399,13 @@ class Activity {
           chart
             .drawEndpoints()
             .on('end', () => {
-              restartBtn.attr('disabled', null).text('Next Graph').on('click', next);
+              restartBtn
+                .attr('disabled', null)
+                .text('Next Graph')
+                .on('click', () => {
+                  next();
+                  restartBtn.text('(scroll down)')
+                });
             });
         });
     };
