@@ -1,18 +1,8 @@
-# Converts index notebook to slides at notebooks/index.slides.html
-build_slides:
-	jupyter nbconvert --to slides notebooks/index.ipynb --reveal-prefix=reveal.js --SlidesExporter.reveal_theme=white --SlidesExporter.reveal_scroll=True --SlidesExporter.reveal_transition=none
+slides:
+	# Converts index notebook to slides at notebooks/index.slides.html
+	jupyter nbconvert --to slides notebooks/index.ipynb --reveal-prefix=https://cdnjs.cloudflare.com/ajax/libs/reveal.js/3.6.0 --SlidesExporter.reveal_theme=white --SlidesExporter.reveal_scroll=True --SlidesExporter.reveal_transition=none
 
-# Moves new slides to index
-%.html: notebooks/%.html
-	mv $< index.html
+	# Moves new slides to index
+	mv notebooks/index.slides.html notebooks/index.html
 
-# Pushes new slides
-push:
-	git add index.html
-	git commit -m 'Make: updated slides'
-	git push origin master
-
-build:
-	build_slides 
-	index.slides.html
-	push
+# TODO: aws sync
