@@ -13,4 +13,6 @@ push:
 	git push origin master
 
 build:
-	build_slides index.slides.html push
+	build_slides 
+	index.slides.html
+	push
