@@ -1,3 +1,5 @@
+You can find the [interactive here](https://jsonkao.github.io/CU-female-representation/) and the [slide deck here](http://columbia.edu/~jk4248/female-rep.html).
+
 # Female representation at Columbia University
 
 An analysis of female representation at Columbia University from 2004 to 2013.
