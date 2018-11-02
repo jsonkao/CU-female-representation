@@ -4,7 +4,6 @@ build_slides:
 
 # Moves new slides to index
 %.html: notebooks/%.html
-	@[ -d docs ] || mkdir docs
 	cp $< $@
 	rm $@
 	mv $@ index.html
