@@ -453,6 +453,14 @@ class Activity {
             .attr('cx', d => d[0])
             .attr('cy', d => d[1]);
         })
+        .on('mouseleave', function() {
+          // if mouse left the last band, remove mousemove and mouseup listeners
+          const [x, y] = d3.mouse(this);
+          const bandNum = Math.round(x / (gWidth / numBands));
+          if (bandNum === numBands) {
+            capture.on('mousemove', null).on('mouseup',null);
+          }
+        })
         .on('mouseup', () => {
           capture.on('mousemove', null).on('mouseup', null);
         });
