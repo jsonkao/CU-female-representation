@@ -1,8 +1,8 @@
 You can find the [interactive here](https://jsonkao.github.io/CU-female-representation/) and the [slide deck here](http://columbia.edu/~jk4248/female-rep.html).
 
-# Female representation at Columbia University
+# Columbia University 2015 Pipeline Report
 
-An analysis of female representation at Columbia University from 2004 to 2013.
+An analysis of the Columbia University Senate's 2015 Pipeline report.
 
 ![alt text](https://raw.githubusercontent.com/jsonkao/CU-female-representation/master/img/Humanities%20UC%20vs.%20TF%404x.png)
 
